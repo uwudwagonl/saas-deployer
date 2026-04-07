@@ -1,0 +1,85 @@
+You are working on saas-deployer, a TypeScript CLI tool (Node 18+, ESM) that automates SaaS deployment setup.
+
+## Quick Reference
+
+- Build: `npm run build` (tsup -> dist/cli.js)
+- Test: `npm test` (703 tests, vitest)
+- Dev: `npm run dev` (tsx, no build needed)
+- Run: `node bin/saas.js`
+- Typecheck: `npx tsc --noEmit`
+
+## Project Structure
+
+```
+src/
+  cli.ts                 # Entry — Commander program, 13 commands, global flags
+  commands/              # Thin wrappers: create ProviderContext, call provider.setup(), persist config
+  providers/             # Service implementations (stripe, db, auth, github, vercel, email, monitoring)
+    types.ts             # Provider interface — preflight() + setup() returning ProviderResult
+    links.ts             # ALL dashboard URLs live here — never hardcode URLs elsewhere
+  config/
+    schema.ts            # Zod v2 schema for saas.config.json
+    store.ts             # Read/write config, markStepCompleted()
+    credentials.ts       # Encrypted credential storage (conf library, per-machine key)
+    migrate.ts           # v1->v2 schema migration, runs in loadConfig()
+  templates/             # Framework-specific code as TypeScript string exports (not files)
+  deploy/                # Topological sort (Kahn's) + orchestrator for `saas deploy`
+  presets/               # minimal, startup, enterprise preset definitions
+  env/                   # EnvManager — .env.local/.env.example generation
+  ui/                    # Logger (chalk), spinner (ora), prompts (inquirer)
+  utils/                 # exec, fs, validation, context helpers
+tests/                   # 31 test files, 703 tests
+```
+
+## Architecture Rules
+
+1. **Providers are pure** — they return `{ success, configUpdates, envVars, manualSteps }`, never mutate config directly. The command layer persists changes.
+2. **ESM only** — `"type": "module"`, all imports use `.js` extensions, no `require()`.
+3. **No default exports** — use named exports everywhere.
+4. **Dashboard URLs** — every URL lives in `src/providers/links.ts`. Never hardcode URLs in providers or commands.
+5. **Templates are functions** — TypeScript string exports in `src/templates/`, not separate template files. Support 5 frameworks: Next.js, Remix, SvelteKit, Nuxt, Astro.
+6. **Native fetch** — use Node's built-in `fetch` for REST APIs. No axios.
+7. **CLI-first auth** — check for CLI tool (gh, vercel, sentry-cli) first, fall back to manual API key entry.
+8. **Non-interactive mode** — all prompts in `src/ui/prompts.ts` check `isInteractive()` and fall back to env vars or defaults.
+9. **Idempotent steps** — `completedSteps` array in config tracks progress. `markStepCompleted()` is idempotent. Commands skip already-completed work.
+
+## Adding a New Provider
+
+1. Create `src/providers/<name>/index.ts` implementing the `Provider` interface from `src/providers/types.ts`
+2. Create `src/commands/<name>.ts` as a thin wrapper
+3. Register the command in `src/cli.ts`
+4. Add dashboard URLs to `src/providers/links.ts`
+5. Add the provider to the dependency graph in `src/deploy/resolver.ts` if it has dependencies
+6. Add framework-specific templates in `src/templates/<name>/` if needed
+7. Update the schema in `src/config/schema.ts` if it adds config fields
+8. Write tests in `tests/`
+
+## Provider Interface
+
+```typescript
+interface Provider {
+  name: string;
+  displayName: string;
+  description: string;
+  category: string;
+  requiredCredentialKeys: string[];
+  dependsOn: string[];
+  preflight(ctx: ProviderContext): Promise<PreflightResult>;
+  setup(ctx: ProviderContext): Promise<ProviderResult>;
+}
+
+interface ProviderResult {
+  success: boolean;
+  configUpdates?: Partial<SaasConfig>;
+  envVars?: Record<string, string>;
+  manualSteps?: ManualStep[];
+}
+```
+
+## Common Pitfalls
+
+- Always run `npm run build` before running CLI tests — `tests/cli-commands.test.ts` invokes the built binary
+- Schema fields with `.default()` become required in the Zod output type — spread a default when creating partial objects
+- The `run()` helper in `src/utils/exec.ts` does NOT use `shell: true` — pass args as array, not a single string
+- Secrets must never be passed via CLI args (visible in `ps`) — use the `stdin` option on `run()`
+- Config credentials use a per-machine derived encryption key — don't hardcode keys

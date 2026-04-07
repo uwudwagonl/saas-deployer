@@ -1,0 +1,34 @@
+You are working on saas-deployer, a TypeScript CLI (ESM, Node 18+) that automates SaaS deployment setup.
+
+## Commands
+- `npm run build` — tsup -> dist/cli.js
+- `npm test` — vitest (703 tests across 31 files)
+- `npm run dev` — tsx src/cli.ts (no build needed)
+- `npx tsc --noEmit` — typecheck
+
+## Architecture
+
+Entry: `src/cli.ts` (Commander, 13 commands, global flags)
+
+Commands (`src/commands/`): thin wrappers that create a ProviderContext, call provider.setup(), persist config updates, mark step complete.
+
+Providers (`src/providers/`): each service implements the Provider interface from `src/providers/types.ts`:
+- `preflight(ctx)` — check readiness, report missing credentials
+- `setup(ctx)` — do the work, return `{ success, configUpdates, envVars, manualSteps }`
+- Providers are pure — return data, never mutate config directly
+
+Config: `saas.config.json` (Zod v2 schema in `src/config/schema.ts`). Credentials encrypted via conf in OS config dir. Schema migration in `src/config/migrate.ts` runs in `loadConfig()`.
+
+Templates (`src/templates/`): TypeScript string exports, framework-specific (Next.js, Remix, SvelteKit, Nuxt, Astro).
+
+Deploy (`src/deploy/`): topological sort (Kahn's algorithm) on `dependsOn` arrays. Runs providers in dependency order, skips completed steps.
+
+## Hard Rules
+- ESM only — `.js` extensions in all imports, no require()
+- No default exports
+- All dashboard URLs in `src/providers/links.ts` — never elsewhere
+- Native fetch for REST APIs — no axios
+- Secrets via stdin, never CLI args
+- Non-interactive mode: prompts check isInteractive(), fall back to env vars
+- Build before CLI tests (cli-commands.test.ts needs dist/)
+- Schema .default() fields are required in output type — provide defaults when creating partial objects

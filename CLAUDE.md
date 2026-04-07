@@ -42,6 +42,17 @@ Tests are in `tests/`. Run `npm test`. Key areas:
 - CLI binary (all commands registered, help output, non-interactive mode)
 - Presets (escalation, schema validity, default providers)
 
+## Adding a New Provider
+
+1. `src/providers/<name>/index.ts` — implement `Provider` interface from `src/providers/types.ts`
+2. `src/commands/<name>.ts` — thin command wrapper (load config, create context, call setup, persist)
+3. Register in `src/cli.ts`
+4. Dashboard URLs in `src/providers/links.ts`
+5. Schema fields in `src/config/schema.ts` if adding config
+6. Dependency edges in `src/deploy/resolver.ts` if provider has deps
+7. Templates in `src/templates/<name>/` if framework-specific
+8. Tests in `tests/`
+
 ## Style
 
 - ESM throughout (`"type": "module"` in package.json, `.js` extensions in imports)
@@ -49,3 +60,6 @@ Tests are in `tests/`. Run `npm test`. Key areas:
 - Providers are pure — return data, don't mutate
 - Use `native fetch` for REST APIs (no axios)
 - Inline topological sort (~30 lines) instead of dependency
+- Secrets via stdin (`run()` with `{ stdin }` option), never CLI args
+- No `shell: true` in exec — pass args as arrays
+- Schema `.default()` fields are required in Zod output type — spread defaults when creating partials

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderTemplate } from "../src/templates/engine.js";
+import { renderTemplate } from "../../src/templates/engine.js";
 
 describe("renderTemplate", () => {
   it("replaces simple variables", () => {

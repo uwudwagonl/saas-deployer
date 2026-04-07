@@ -7,7 +7,7 @@ import {
   isDomainName,
   isStripeWebhookSecret,
   isNonEmpty,
-} from "../src/utils/validation.js";
+} from "../../src/utils/validation.js";
 
 describe("isStripeSecretKey — edge cases", () => {
   it("rejects key with only prefix", () => {

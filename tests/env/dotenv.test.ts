@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseDotEnv, diffEnv } from "../src/env/dotenv.js";
+import { parseDotEnv, diffEnv } from "../../src/env/dotenv.js";
 
 describe("parseDotEnv", () => {
   it("parses simple key-value pairs", () => {

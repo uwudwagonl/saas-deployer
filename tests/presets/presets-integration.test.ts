@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { PRESETS, getPreset } from "../src/presets/index.js";
-import { saasConfigSchema } from "../src/config/schema.js";
+import { PRESETS, getPreset } from "../../src/presets/index.js";
+import { saasConfigSchema } from "../../src/config/schema.js";
 
 /**
  * Tests that preset defaults produce valid configs when merged

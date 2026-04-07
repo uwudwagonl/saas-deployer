@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { run, commandExists } from "../src/utils/exec.js";
+import { run, commandExists } from "../../src/utils/exec.js";
 
 describe("run", () => {
   it("runs a simple command and returns stdout", async () => {

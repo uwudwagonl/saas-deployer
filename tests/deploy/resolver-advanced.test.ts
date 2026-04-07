@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { topologicalSort } from "../src/deploy/resolver.js";
+import { topologicalSort } from "../../src/deploy/resolver.js";
 
 describe("topologicalSort — advanced cases", () => {
   it("handles the full SaaS deploy dependency graph", () => {

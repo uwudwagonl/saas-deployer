@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { EnvManager } from "../src/env/manager.js";
+import { EnvManager } from "../../src/env/manager.js";
 
 /**
  * Tests simulating the collectEnvVars function from commands/env.ts

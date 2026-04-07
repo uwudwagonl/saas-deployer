@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdtemp, rm, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileExists, readJson, writeJson, ensureDir, projectPath } from "../src/utils/fs.js";
+import { fileExists, readJson, writeJson, ensureDir, projectPath } from "../../src/utils/fs.js";
 
 describe("fileExists", () => {
   let tmpDir: string;

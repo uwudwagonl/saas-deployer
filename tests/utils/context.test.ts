@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { createContext, isInteractive, isDryRun, isVerbose } from "../src/utils/context.js";
+import { createContext, isInteractive, isDryRun, isVerbose } from "../../src/utils/context.js";
 
 describe("createContext", () => {
   const originalEnv = { ...process.env };

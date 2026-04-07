@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { input, confirm, select, checkbox, password } from "../src/ui/prompts.js";
+import { input, confirm, select, checkbox, password } from "../../src/ui/prompts.js";
 
 /**
  * Test non-interactive mode behavior of the prompts wrapper.

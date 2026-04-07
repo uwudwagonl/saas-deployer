@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getPreset, getPresetNames, PRESETS } from "../src/presets/index.js";
+import { getPreset, getPresetNames, PRESETS } from "../../src/presets/index.js";
 
 describe("presets", () => {
   it("has three presets", () => {

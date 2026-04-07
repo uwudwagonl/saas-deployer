@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LINKS } from "../src/providers/links.js";
+import { LINKS } from "../../src/providers/links.js";
 
 describe("LINKS", () => {
   describe("all static URLs are valid HTTPS", () => {

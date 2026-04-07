@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { migrateConfig } from "../src/config/migrate.js";
+import { migrateConfig } from "../../src/config/migrate.js";
 
 describe("migrateConfig", () => {
   it("passes through valid v2 config unchanged", () => {

@@ -7,7 +7,7 @@ import {
   isDomainName,
   isStripeWebhookSecret,
   isNonEmpty,
-} from "../src/utils/validation.js";
+} from "../../src/utils/validation.js";
 
 describe("isStripeSecretKey", () => {
   it("accepts valid test key", () => {

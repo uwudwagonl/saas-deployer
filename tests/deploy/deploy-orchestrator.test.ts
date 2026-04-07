@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { topologicalSort } from "../src/deploy/resolver.js";
-import { stripeProvider } from "../src/providers/stripe/index.js";
-import { databaseProvider } from "../src/providers/db/index.js";
-import { authProvider } from "../src/providers/auth/index.js";
-import { githubProvider } from "../src/providers/github/index.js";
-import { vercelProvider } from "../src/providers/vercel/index.js";
-import type { Provider } from "../src/providers/types.js";
+import { topologicalSort } from "../../src/deploy/resolver.js";
+import { stripeProvider } from "../../src/providers/stripe/index.js";
+import { databaseProvider } from "../../src/providers/db/index.js";
+import { authProvider } from "../../src/providers/auth/index.js";
+import { githubProvider } from "../../src/providers/github/index.js";
+import { vercelProvider } from "../../src/providers/vercel/index.js";
+import type { Provider } from "../../src/providers/types.js";
 
 /**
  * Tests the deploy orchestrator's dependency resolution

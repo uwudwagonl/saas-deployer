@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseDotEnv, diffEnv } from "../src/env/dotenv.js";
+import { parseDotEnv, diffEnv } from "../../src/env/dotenv.js";
 
 describe("parseDotEnv — advanced cases", () => {
   it("handles Windows line endings (CRLF)", () => {

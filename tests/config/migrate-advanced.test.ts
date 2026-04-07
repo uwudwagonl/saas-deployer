@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { migrateConfig } from "../src/config/migrate.js";
-import { saasConfigSchema } from "../src/config/schema.js";
+import { migrateConfig } from "../../src/config/migrate.js";
+import { saasConfigSchema } from "../../src/config/schema.js";
 
 describe("migrateConfig — advanced cases", () => {
   it("migrates v1 with full stripe config", () => {

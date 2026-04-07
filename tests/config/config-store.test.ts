@@ -5,9 +5,9 @@ import { join } from "node:path";
 
 // We need to mock projectPath to use a temp dir
 // The store module uses projectPath internally, so we test via readJson/writeJson directly
-import { readJson, writeJson, fileExists } from "../src/utils/fs.js";
-import { migrateConfig } from "../src/config/migrate.js";
-import { saasConfigSchema } from "../src/config/schema.js";
+import { readJson, writeJson, fileExists } from "../../src/utils/fs.js";
+import { migrateConfig } from "../../src/config/migrate.js";
+import { saasConfigSchema } from "../../src/config/schema.js";
 
 describe("config store integration", () => {
   let tmpDir: string;

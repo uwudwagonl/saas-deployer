@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { renderTemplate } from "../src/templates/engine.js";
-import { stripeWebhookNextjs } from "../src/templates/stripe/webhook-handler.nextjs.js";
-import { stripeWebhookRemix } from "../src/templates/stripe/webhook-handler.remix.js";
-import { stripeWebhookSveltekit } from "../src/templates/stripe/webhook-handler.sveltekit.js";
-import { stripeWebhookNuxt } from "../src/templates/stripe/webhook-handler.nuxt.js";
-import { stripeWebhookAstro } from "../src/templates/stripe/webhook-handler.astro.js";
-import { clerkMiddlewareNextjs } from "../src/templates/auth/middleware.nextjs.js";
-import { nextauthConfigNextjs, nextauthRouteHandler, nextauthMiddleware } from "../src/templates/auth/auth-config.nextjs.js";
-import { betterAuthConfig, betterAuthClient } from "../src/templates/auth/better-auth-config.js";
+import { renderTemplate } from "../../src/templates/engine.js";
+import { stripeWebhookNextjs } from "../../src/templates/stripe/webhook-handler.nextjs.js";
+import { stripeWebhookRemix } from "../../src/templates/stripe/webhook-handler.remix.js";
+import { stripeWebhookSveltekit } from "../../src/templates/stripe/webhook-handler.sveltekit.js";
+import { stripeWebhookNuxt } from "../../src/templates/stripe/webhook-handler.nuxt.js";
+import { stripeWebhookAstro } from "../../src/templates/stripe/webhook-handler.astro.js";
+import { clerkMiddlewareNextjs } from "../../src/templates/auth/middleware.nextjs.js";
+import { nextauthConfigNextjs, nextauthRouteHandler, nextauthMiddleware } from "../../src/templates/auth/auth-config.nextjs.js";
+import { betterAuthConfig, betterAuthClient } from "../../src/templates/auth/better-auth-config.js";
 
 describe("Stripe webhook templates", () => {
   describe("Next.js template", () => {

@@ -140,18 +140,36 @@ node bin/saas.js      # Run the built CLI
 
 ```
 src/
-  cli.ts              # Commander entry point, registers all 13 commands
-  commands/            # Thin command wrappers (init, stripe, db, auth, ...)
-  providers/           # Service implementations (Stripe SDK, GitHub, Vercel, ...)
-  config/              # Zod schema, config store, encrypted credentials, migration
-  templates/           # Framework-specific code generators (webhook handlers, middleware)
-  deploy/              # Topological sort + orchestrator for `saas deploy`
-  presets/             # Preset definitions (minimal, startup, enterprise)
-  env/                 # EnvManager — .env.local/.env.example generation
-  ui/                  # Logger (chalk), spinner (ora), prompts (inquirer)
-  utils/               # exec, fs, validation, context helpers
-tests/                 # 703 tests across 31 files
+  cli.ts               # Commander entry point, registers all 13 commands
+  commands/             # Thin command wrappers (init, stripe, db, auth, ...)
+  providers/            # Service implementations (Stripe SDK, GitHub, Vercel, ...)
+  config/               # Zod schema, config store, encrypted credentials, migration
+  templates/            # Framework-specific code generators (webhook handlers, middleware)
+  deploy/               # Topological sort + orchestrator for `saas deploy`
+  presets/              # Preset definitions (minimal, startup, enterprise)
+  env/                  # EnvManager — .env.local/.env.example generation
+  ui/                   # Logger (chalk), spinner (ora), prompts (inquirer)
+  utils/                # exec, fs, validation, context helpers
+tests/
+  config/               # Schema, migration, config store tests
+  providers/            # Provider interface, secrets, webhook tests
+  deploy/               # Resolver, orchestrator tests
+  env/                  # EnvManager, dotenv tests
+  templates/            # Template content + engine tests
+  cli/                  # CLI binary, commands, prompt tests
+  utils/                # Validation, exec, fs, context tests
+  presets/              # Preset tests
+docs/
+  CLAUDE.md             # Full AI agent context (Claude Code)
+  CONTRIBUTING.md       # Contributing guide + architecture reference
+  .cursorrules          # Full Cursor rules
+  .windsurfrules        # Full Windsurf rules
+  .clinerules           # Full Cline rules
 ```
+
+## Contributing
+
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the full guide — architecture, provider pattern, code style, and how to add new providers.
 
 ## License
 

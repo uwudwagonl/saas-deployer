@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { saasConfigSchema, stripeProductSchema } from "../src/config/schema.js";
+import { saasConfigSchema, stripeProductSchema } from "../../src/config/schema.js";
 
 describe("stripeProductSchema", () => {
   it("accepts a valid product", () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { saasConfigSchema } from "../src/config/schema.js";
-import { migrateConfig } from "../src/config/migrate.js";
+import { saasConfigSchema } from "../../src/config/schema.js";
+import { migrateConfig } from "../../src/config/migrate.js";
 
 /**
  * Integration tests that simulate real config lifecycle scenarios

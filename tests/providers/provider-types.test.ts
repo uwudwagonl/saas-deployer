@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { stripeProvider } from "../src/providers/stripe/index.js";
-import { databaseProvider } from "../src/providers/db/index.js";
-import { authProvider } from "../src/providers/auth/index.js";
-import { githubProvider } from "../src/providers/github/index.js";
-import { vercelProvider } from "../src/providers/vercel/index.js";
-import { emailProvider } from "../src/providers/email/index.js";
-import { monitoringProvider } from "../src/providers/monitoring/index.js";
-import type { Provider } from "../src/providers/types.js";
+import { stripeProvider } from "../../src/providers/stripe/index.js";
+import { databaseProvider } from "../../src/providers/db/index.js";
+import { authProvider } from "../../src/providers/auth/index.js";
+import { githubProvider } from "../../src/providers/github/index.js";
+import { vercelProvider } from "../../src/providers/vercel/index.js";
+import { emailProvider } from "../../src/providers/email/index.js";
+import { monitoringProvider } from "../../src/providers/monitoring/index.js";
+import type { Provider } from "../../src/providers/types.js";
 
 const ALL_PROVIDERS: Provider[] = [
   stripeProvider,

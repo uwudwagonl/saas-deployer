@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { stripeWebhookNextjs } from "../src/templates/stripe/webhook-handler.nextjs.js";
-import { stripeWebhookRemix } from "../src/templates/stripe/webhook-handler.remix.js";
-import { stripeWebhookSveltekit } from "../src/templates/stripe/webhook-handler.sveltekit.js";
-import { stripeWebhookNuxt } from "../src/templates/stripe/webhook-handler.nuxt.js";
-import { stripeWebhookAstro } from "../src/templates/stripe/webhook-handler.astro.js";
+import { stripeWebhookNextjs } from "../../src/templates/stripe/webhook-handler.nextjs.js";
+import { stripeWebhookRemix } from "../../src/templates/stripe/webhook-handler.remix.js";
+import { stripeWebhookSveltekit } from "../../src/templates/stripe/webhook-handler.sveltekit.js";
+import { stripeWebhookNuxt } from "../../src/templates/stripe/webhook-handler.nuxt.js";
+import { stripeWebhookAstro } from "../../src/templates/stripe/webhook-handler.astro.js";
 
 // The WEBHOOK_ROUTES mapping from stripe provider
 const WEBHOOK_ROUTES: Record<string, { path: string; template: string }> = {

@@ -20,6 +20,10 @@ export function isDomainName(value: string): boolean {
   );
 }
 
+export function isStripeWebhookSecret(value: string): boolean {
+  return /^whsec_[A-Za-z0-9]+$/.test(value);
+}
+
 export function isNonEmpty(value: string): string | true {
   return value.trim().length > 0 || "This field is required.";
 }

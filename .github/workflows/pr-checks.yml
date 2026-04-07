@@ -1,0 +1,94 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Report bundle size
+        run: |
+          SIZE=$(du -sh dist/cli.js | cut -f1)
+          MAP_SIZE=$(du -sh dist/cli.js.map | cut -f1)
+          echo "### Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          echo "| \`dist/cli.js\` | $SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| \`dist/cli.js.map\` | $MAP_SIZE |" >> $GITHUB_STEP_SUMMARY
+
+  test-coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run tests with coverage
+        run: npx vitest run --coverage --coverage.reporter=text --coverage.reporter=json-summary 2>&1 || true
+
+      - name: Report test results
+        if: always()
+        run: |
+          RESULT=$(npx vitest run 2>&1)
+          TESTS=$(echo "$RESULT" | grep "Tests" | tail -1)
+          FILES=$(echo "$RESULT" | grep "Test Files" | tail -1)
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- $FILES" >> $GITHUB_STEP_SUMMARY
+          echo "- $TESTS" >> $GITHUB_STEP_SUMMARY
+
+  windows-compat:
+    name: Windows Compatibility
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: node bin/saas.js --version
+
+  macos-compat:
+    name: macOS Compatibility
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: node bin/saas.js --version

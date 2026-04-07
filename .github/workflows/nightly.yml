@@ -1,0 +1,94 @@
+name: Nightly
+
+on:
+  schedule:
+    # Run every day at 2am UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  nightly-test:
+    name: Nightly Full Test Suite
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: node bin/saas.js --version
+
+  dependency-freshness:
+    name: Check for Outdated Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check outdated
+        run: |
+          echo "### Outdated Dependencies" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npm outdated 2>&1 >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  smoke-test:
+    name: CLI Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Test --help for all commands
+        run: |
+          node bin/saas.js --help
+          node bin/saas.js init --help
+          node bin/saas.js status --help
+          node bin/saas.js stripe --help
+          node bin/saas.js db --help
+          node bin/saas.js auth --help
+          node bin/saas.js env --help
+          node bin/saas.js github --help
+          node bin/saas.js vercel --help
+          node bin/saas.js deploy --help
+          node bin/saas.js domain --help
+          node bin/saas.js email --help
+          node bin/saas.js monitoring --help
+          node bin/saas.js add --help
+
+      - name: Test --version
+        run: |
+          VERSION=$(node bin/saas.js --version)
+          echo "CLI version: $VERSION"
+          [ -n "$VERSION" ] || exit 1
+
+      - name: Test status without config (should warn, not crash)
+        run: |
+          cd /tmp
+          node $GITHUB_WORKSPACE/bin/saas.js status 2>&1 || true

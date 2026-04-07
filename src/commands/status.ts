@@ -6,7 +6,6 @@ import { hasCredential } from "../config/credentials.js";
 
 interface StatusItem {
   label: string;
-  step: string;
   check: () => boolean | string;
 }
 
@@ -28,17 +27,18 @@ export function registerStatusCommand(program: Command) {
       console.log();
       console.log(`  ${chalk.bold("Project:")} ${config.project.name}`);
       console.log(`  ${chalk.bold("Framework:")} ${config.project.framework}`);
+      if (config.project.preset) {
+        console.log(`  ${chalk.bold("Preset:")} ${config.project.preset}`);
+      }
       console.log();
 
       const items: StatusItem[] = [
         {
           label: "Project Init",
-          step: "init",
           check: () => completed.includes("init"),
         },
         {
           label: "Stripe",
-          step: "stripe",
           check: () => {
             if (!completed.includes("stripe")) return false;
             const count = config.stripe?.products?.length ?? 0;
@@ -47,7 +47,6 @@ export function registerStatusCommand(program: Command) {
         },
         {
           label: "Database",
-          step: "db",
           check: () => {
             if (!config.db) return false;
             return config.db.provider;
@@ -55,15 +54,20 @@ export function registerStatusCommand(program: Command) {
         },
         {
           label: "Auth",
-          step: "auth",
           check: () => {
             if (!config.auth) return false;
             return config.auth.provider;
           },
         },
         {
+          label: "Email",
+          check: () => {
+            if (!config.email) return false;
+            return config.email.provider;
+          },
+        },
+        {
           label: "GitHub",
-          step: "github",
           check: () => {
             if (!config.github) return false;
             return config.github.repo;
@@ -71,15 +75,37 @@ export function registerStatusCommand(program: Command) {
         },
         {
           label: "Vercel",
-          step: "vercel",
           check: () => {
             if (!config.vercel?.projectId) return false;
             return config.vercel.domain ?? "deployed";
           },
         },
         {
+          label: "Monitoring",
+          check: () => {
+            if (!config.monitoring?.errorTracking && !config.monitoring?.analytics) return false;
+            const parts: string[] = [];
+            if (config.monitoring.errorTracking) parts.push(config.monitoring.errorTracking.provider);
+            if (config.monitoring.analytics) parts.push(config.monitoring.analytics.provider);
+            return parts.join(" + ");
+          },
+        },
+        {
+          label: "Storage",
+          check: () => {
+            if (!config.storage) return false;
+            return config.storage.provider;
+          },
+        },
+        {
+          label: "Background Jobs",
+          check: () => {
+            if (!config.jobs) return false;
+            return config.jobs.provider;
+          },
+        },
+        {
           label: "Domain",
-          step: "domain",
           check: () => completed.includes("domain"),
         },
       ];
@@ -103,9 +129,7 @@ export function registerStatusCommand(program: Command) {
       const done = items.filter((i) => i.check() !== false).length;
       const total = items.length;
       console.log();
-      console.log(
-        `  ${chalk.bold(`${done}/${total}`)} steps completed`
-      );
+      console.log(`  ${chalk.bold(`${done}/${total}`)} steps completed`);
 
       // Credential status
       console.log();
@@ -114,12 +138,15 @@ export function registerStatusCommand(program: Command) {
       const creds = [
         { label: "Stripe Secret Key", key: "stripe_secret_key" },
         { label: "Stripe Publishable Key", key: "stripe_publishable_key" },
+        { label: "Stripe Webhook Secret", key: "stripe_webhook_secret" },
         { label: "GitHub Token", key: "github_token" },
         { label: "Vercel Token", key: "vercel_token" },
+        { label: "Database URL", key: "database_url" },
       ];
       for (const cred of creds) {
-        const icon = hasCredential(cred.key) ? chalk.green("●") : chalk.dim("○");
-        console.log(`  ${icon} ${hasCredential(cred.key) ? cred.label : chalk.dim(cred.label)}`);
+        const has = hasCredential(cred.key);
+        const icon = has ? chalk.green("●") : chalk.dim("○");
+        console.log(`  ${icon} ${has ? cred.label : chalk.dim(cred.label)}`);
       }
       console.log();
     });

@@ -6,9 +6,12 @@ import { fileExists, projectPath } from "../utils/fs.js";
 import {
   configExists,
   createDefaultConfig,
+  loadConfig,
+  saveConfig,
   markStepCompleted,
 } from "../config/store.js";
 import type { SaasConfig } from "../config/schema.js";
+import { PRESETS, getPreset, getPresetNames } from "../presets/index.js";
 
 type Framework = SaasConfig["project"]["framework"];
 
@@ -36,7 +39,11 @@ export function registerInitCommand(program: Command) {
   program
     .command("init")
     .description("Initialize a new SaaS project configuration")
-    .action(async () => {
+    .option(
+      "--preset <preset>",
+      `Use a preset (${getPresetNames().join(", ")})`
+    )
+    .action(async (options: { preset?: string }) => {
       log.header("SaaS Deployer — Project Init");
 
       if (await configExists()) {
@@ -75,20 +82,71 @@ export function registerInitCommand(program: Command) {
         framework = await promptFramework();
       }
 
+      // Preset selection
+      let preset: string | undefined = options.preset;
+      if (preset && !getPreset(preset)) {
+        log.error(`Unknown preset: ${preset}`);
+        log.info(`Available: ${getPresetNames().join(", ")}`);
+        process.exit(1);
+      }
+
+      if (!preset) {
+        const usePreset = await confirm({
+          message: "Would you like to use a preset?",
+          default: false,
+        });
+        if (usePreset) {
+          preset = await select({
+            message: "Select a preset:",
+            choices: Object.values(PRESETS).map((p) => ({
+              name: `${p.displayName} — ${p.description}`,
+              value: p.name,
+            })),
+          });
+        }
+      }
+
       // Create config
       await createDefaultConfig(name, framework);
+
+      // Apply preset defaults to config (only set fields that aren't already configured)
+      if (preset) {
+        const presetDef = getPreset(preset)!;
+        const config = await loadConfig();
+        config.project.preset = preset as SaasConfig["project"]["preset"];
+        for (const [key, value] of Object.entries(presetDef.defaults)) {
+          if (!(config as any)[key]) {
+            (config as any)[key] = value;
+          }
+        }
+        await saveConfig(config);
+      }
+
       await markStepCompleted("init");
 
       log.blank();
       log.success("Project initialized! Created saas.config.json");
-      log.blank();
-      log.info("Next steps:");
-      log.dim("  saas stripe   — Set up Stripe products & billing");
-      log.dim("  saas db       — Set up your database");
-      log.dim("  saas auth     — Set up authentication");
-      log.dim("  saas github   — Create GitHub repo & push");
-      log.dim("  saas vercel   — Deploy to Vercel");
-      log.dim("  saas deploy   — Run the full setup flow");
+
+      if (preset) {
+        const presetDef = getPreset(preset)!;
+        log.blank();
+        log.info(`Preset "${presetDef.displayName}" selected.`);
+        log.info("Services to configure:");
+        for (const svc of presetDef.services) {
+          log.dim(`  saas ${svc}`);
+        }
+        log.blank();
+        log.success('Run "saas deploy" to set up all services, or add them individually.');
+      } else {
+        log.blank();
+        log.info("Next steps:");
+        log.dim("  saas stripe   — Set up Stripe products & billing");
+        log.dim("  saas db       — Set up your database");
+        log.dim("  saas auth     — Set up authentication");
+        log.dim("  saas github   — Create GitHub repo & push");
+        log.dim("  saas vercel   — Deploy to Vercel");
+        log.dim("  saas deploy   — Run the full setup flow");
+      }
     });
 }
 

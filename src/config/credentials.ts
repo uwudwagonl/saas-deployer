@@ -1,8 +1,15 @@
 import Conf from "conf";
+import { createHash } from "node:crypto";
+import { hostname, userInfo } from "node:os";
+
+function deriveEncryptionKey(): string {
+  const machine = `${hostname()}-${userInfo().username}-saas-deployer`;
+  return createHash("sha256").update(machine).digest("hex");
+}
 
 const store = new Conf({
   projectName: "saas-deployer",
-  encryptionKey: "saas-deployer-local-key",
+  encryptionKey: deriveEncryptionKey(),
 });
 
 export function getCredential(key: string): string | undefined {

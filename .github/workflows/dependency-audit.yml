@@ -1,0 +1,77 @@
+name: Dependency Audit
+
+on:
+  schedule:
+    # Run every Monday at 9am UTC
+    - cron: "0 9 * * 1"
+  push:
+    paths:
+      - "package.json"
+      - "package-lock.json"
+  pull_request:
+    paths:
+      - "package.json"
+      - "package-lock.json"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  audit:
+    name: npm Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run audit
+        run: npm audit --production 2>&1 | tee audit-results.txt || true
+
+      - name: Check for critical/high vulnerabilities
+        run: |
+          if npm audit --production --audit-level=high 2>&1 | grep -q "found 0 vulnerabilities"; then
+            echo "No high/critical vulnerabilities found"
+            echo "### Security Audit: PASSED" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### Security Audit: WARNINGS" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            npm audit --production 2>&1 >> $GITHUB_STEP_SUMMARY || true
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check licenses
+        run: |
+          npx license-checker --production --summary 2>&1 | tee license-report.txt
+          echo "### License Report" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat license-report.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for copyleft licenses
+        run: |
+          if npx license-checker --production --failOn "GPL-2.0;GPL-3.0;AGPL-1.0;AGPL-3.0" 2>&1; then
+            echo "No copyleft licenses detected"
+          else
+            echo "::warning::Copyleft license detected in dependencies"
+          fi

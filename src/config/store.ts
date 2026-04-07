@@ -1,4 +1,5 @@
 import { saasConfigSchema, type SaasConfig } from "./schema.js";
+import { migrateConfig } from "./migrate.js";
 import { readJson, writeJson, fileExists, projectPath } from "../utils/fs.js";
 
 const CONFIG_FILE = "saas.config.json";
@@ -13,7 +14,8 @@ export async function configExists(): Promise<boolean> {
 
 export async function loadConfig(): Promise<SaasConfig> {
   const raw = await readJson(configPath());
-  return saasConfigSchema.parse(raw);
+  const migrated = migrateConfig(raw);
+  return saasConfigSchema.parse(migrated);
 }
 
 export async function saveConfig(config: SaasConfig): Promise<void> {
@@ -25,7 +27,7 @@ export async function createDefaultConfig(
   framework: SaasConfig["project"]["framework"]
 ): Promise<SaasConfig> {
   const config: SaasConfig = {
-    version: 1,
+    version: 2,
     project: { name, framework },
     completedSteps: [],
   };

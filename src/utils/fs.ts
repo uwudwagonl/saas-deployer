@@ -12,7 +12,11 @@ export async function fileExists(filePath: string): Promise<boolean> {
 
 export async function readJson<T = unknown>(filePath: string): Promise<T> {
   const content = await readFile(filePath, "utf-8");
-  return JSON.parse(content) as T;
+  try {
+    return JSON.parse(content) as T;
+  } catch {
+    throw new Error(`Invalid JSON in ${filePath}`);
+  }
 }
 
 export async function writeJson(

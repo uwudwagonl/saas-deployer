@@ -33,6 +33,7 @@ export function registerDomainCommand(program: Command) {
       if (vercelToken && projectId) {
         const result = await addDomain(vercelToken, projectId);
         config.vercel = {
+          envScopes: [],
           ...config.vercel,
           domain: result.domain,
         };
@@ -61,7 +62,7 @@ export function registerDomainCommand(program: Command) {
         log.link(LINKS.cloudflare.signup, "Cloudflare (recommended)");
         log.blank();
 
-        config.vercel = { ...config.vercel, domain };
+        config.vercel = { envScopes: [], ...config.vercel, domain };
         await saveConfig(config);
         await markStepCompleted("domain");
         log.success("Domain saved to config");

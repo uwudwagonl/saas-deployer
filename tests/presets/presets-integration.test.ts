@@ -26,7 +26,7 @@ describe("preset defaults produce valid configs", () => {
 });
 
 describe("preset service lists match available commands", () => {
-  const validServices = ["stripe", "db", "auth", "email", "monitoring", "github", "vercel", "domain"];
+  const validServices = ["stripe", "db", "auth", "email", "monitoring", "github", "vercel", "domain", "queue", "storage"];
 
   for (const [name, preset] of Object.entries(PRESETS)) {
     it(`"${name}" services are all valid`, () => {

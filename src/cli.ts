@@ -13,6 +13,10 @@ import { registerDomainCommand } from "./commands/domain.js";
 import { registerEmailCommand } from "./commands/email.js";
 import { registerMonitoringCommand } from "./commands/monitoring.js";
 import { registerAddCommand } from "./commands/add.js";
+import { registerQueueCommand } from "./commands/queue.js";
+import { registerStorageCommand } from "./commands/storage.js";
+import { registerChecklistCommand } from "./commands/checklist.js";
+import { registerScaffoldCommand } from "./commands/scaffold.js";
 
 const program = new Command();
 
@@ -58,6 +62,10 @@ registerDomainCommand(program);
 registerEmailCommand(program);
 registerMonitoringCommand(program);
 registerAddCommand(program);
+registerQueueCommand(program);
+registerStorageCommand(program);
+registerChecklistCommand(program);
+registerScaffoldCommand(program);
 
 // Global error handler
 program.exitOverride();

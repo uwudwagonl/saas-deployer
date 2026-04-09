@@ -98,5 +98,26 @@ export const LINKS = {
     signup: "https://dash.cloudflare.com/sign-up",
     apiTokens:
       "https://dash.cloudflare.com/?to=/:account/profile/api-tokens",
+    r2: "https://dash.cloudflare.com/?to=/:account/r2/buckets",
+  },
+
+  // Queue / Jobs
+  upstash: {
+    signup: "https://console.upstash.com/login",
+    console: "https://console.upstash.com",
+  },
+  inngest: {
+    signup: "https://www.inngest.com/sign-up",
+    dashboard: "https://app.inngest.com",
+  },
+  triggerDev: {
+    signup: "https://cloud.trigger.dev/login",
+    dashboard: "https://cloud.trigger.dev",
+  },
+
+  // Storage
+  uploadthing: {
+    signup: "https://uploadthing.com/sign-in",
+    dashboard: "https://uploadthing.com/dashboard",
   },
 } as const;

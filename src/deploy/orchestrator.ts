@@ -14,11 +14,19 @@ import { databaseProvider } from "../providers/db/index.js";
 import { authProvider } from "../providers/auth/index.js";
 import { githubProvider } from "../providers/github/index.js";
 import { vercelProvider } from "../providers/vercel/index.js";
+import { emailProvider } from "../providers/email/index.js";
+import { monitoringProvider } from "../providers/monitoring/index.js";
+import { queueProvider } from "../providers/queue/index.js";
+import { storageProvider } from "../providers/storage/index.js";
 
 const ALL_PROVIDERS: Provider[] = [
   databaseProvider,
   authProvider,
   stripeProvider,
+  emailProvider,
+  queueProvider,
+  storageProvider,
+  monitoringProvider,
   githubProvider,
   vercelProvider,
 ];

@@ -35,8 +35,8 @@ export const PRESETS: Record<string, Preset> = {
   enterprise: {
     name: "enterprise",
     displayName: "Enterprise",
-    description: "Everything — Stripe, DB, Auth, Email, Monitoring, GitHub, Vercel, Domain",
-    services: ["stripe", "db", "auth", "email", "monitoring", "github", "vercel", "domain"],
+    description: "Everything — Stripe, DB, Auth, Email, Queue, Storage, Monitoring, GitHub, Vercel, Domain",
+    services: ["stripe", "db", "auth", "email", "queue", "storage", "monitoring", "github", "vercel", "domain"],
     defaults: {
       db: {
         provider: "neon",

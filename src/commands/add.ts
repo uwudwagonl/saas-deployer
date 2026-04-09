@@ -21,6 +21,8 @@ const SERVICES: ServiceEntry[] = [
   { name: "Auth", command: "auth", description: "Authentication", step: "auth" },
   { name: "Email", command: "email", description: "Email service", step: "email" },
   { name: "Monitoring", command: "monitoring", description: "Error tracking & analytics", step: "monitoring" },
+  { name: "Queue", command: "queue", description: "Background jobs & queues", step: "queue" },
+  { name: "Storage", command: "storage", description: "File & object storage", step: "storage" },
   { name: "GitHub", command: "github", description: "Repo, secrets, CI/CD", step: "github" },
   { name: "Vercel", command: "vercel", description: "Deploy & hosting", step: "vercel" },
   { name: "Domain", command: "domain", description: "Custom domain setup", step: "domain" },

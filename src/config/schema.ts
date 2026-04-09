@@ -118,7 +118,7 @@ export const saasConfigSchema = z.object({
     .optional(),
   jobs: z
     .object({
-      provider: z.enum(["inngest", "trigger-dev", "other"]),
+      provider: z.enum(["inngest", "trigger-dev", "upstash", "bullmq", "other"]),
       configured: z.boolean().default(false),
     })
     .optional(),
